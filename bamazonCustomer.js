@@ -28,22 +28,42 @@ var connection = mysql.createConnection({
 });
 
 // connect to the mysql server and sql database
-connection.connect(function(err) {
+connection.connect(function (err) {
     if (err) throw err;
     // run the start function after the connection is made to prompt the user
     start();
 });
 
-function start() {
+async function start() {
+    // Welcome message
     console.log("---------- Welcome to Bamazon! ----------");
-    connection.query("SELECT * from products", function(error, results, fields) {
+
+    // Show all the items
+    connection.query("SELECT * from products", function (error, results, fields) {
         console.log("Available products: ");
         console.log("Item ID\tProduct Name\tPrice ($)");
         results.forEach(rawdata => {
             console.log(rawdata.item_id + '\t' + rawdata.product_name + '\t' + rawdata.price);
         });
-    })
+
+        // input prompt
+        inquirer.prompt([
+            {
+                name: "id",
+                type: "input",
+                message: "Please enter the item id to purchase: "
+            },
+            {
+                name: "quantity",
+                type: "input",
+                message: "Please enter the quantity of the purchasing item"
+            }
+        ]).then(function (answer) {
+            console.log(answer.id);
+            console.log(answer.quantity);
+        })
+    });
+
     connection.end();
 }
-  
-  
+
