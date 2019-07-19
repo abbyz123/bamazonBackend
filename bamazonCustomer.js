@@ -37,7 +37,7 @@ connection.connect(function (err) {
 
 async function start() {
     // Welcome message
-    console.log("---------- Welcome to Bamazon! ----------");
+    console.log("**---------- Welcome to Bamazon! ----------**");
 
     // Show all the items
     connection.query("SELECT * from products", function (error, results, fields) {
