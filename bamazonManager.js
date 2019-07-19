@@ -13,9 +13,9 @@ let connection = mysql.createConnection({
     database: db.login.db
 })
 
-connection.connect(async function (err) {
+connection.connect(function (err) {
     if (err) throw err;
-    await console.log("****------Welcome to the manager page-------****");
+    console.log("****------Welcome to the manager page-------****");
 
     // start the manager backend
     start();
