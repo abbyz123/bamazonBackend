@@ -15,7 +15,9 @@ let connection = mysql.createConnection({
 
 connection.connect(async function (err) {
     if (err) throw err;
-    await console.log("****------Welcome to the manager page-------**");
+    await console.log("****------Welcome to the manager page-------****");
+
+    // start the manager backend
     start();
 });
 
@@ -36,35 +38,45 @@ function start() {
     ]).then(function (answer) {
         switch (answer.managerList) {
             case "View products for sale":
-                connection.query("SELECT * from products", function (error, results, fields) {
-                    if (error) throw error;
-
-                    console.log("Available products: ");
-                    console.log("Item ID\tProduct Name\tPrice ($)\tQuantity");
-
-                    results.forEach(rawdata => {
-                        console.log(rawdata.item_id + '\t' + rawdata.product_name + '\t' + rawdata.price + '\t' + rawdata.stock_quantity);
-                    });
-
-                    connection.end();
-                });
-                break;
-            case "View low inventory":
-                connection.query("SELECT * from products where stock_quantity < 5", function (error, results, fields) {
-                    if (error) throw error;
-                    if (0 === results.length) {
-                        console.log("No low inventory items");
-                        connection.end();
-                    } else {
+                try {
+                    connection.query("SELECT * from products", function (error, results, fields) {
+                        if (error) throw error;
+    
                         console.log("Available products: ");
                         console.log("Item ID\tProduct Name\tPrice ($)\tQuantity");
-
+    
                         results.forEach(rawdata => {
                             console.log(rawdata.item_id + '\t' + rawdata.product_name + '\t' + rawdata.price + '\t' + rawdata.stock_quantity);
                         });
-                        connection.end();
-                    }
-                });
+                    });
+                } catch (error) {
+                    console.log(error);
+                } finally {
+                    connection.end();
+                }
+
+                break;
+            case "View low inventory":
+                try {
+                    connection.query("SELECT * from products where stock_quantity < 5", function (error, results, fields) {
+                        if (error) throw error;
+                        if (0 === results.length) {
+                            console.log("No low inventory items");
+                        } else {
+                            console.log("Available products: ");
+                            console.log("Item ID\tProduct Name\tPrice ($)\tQuantity");
+    
+                            results.forEach(rawdata => {
+                                console.log(rawdata.item_id + '\t' + rawdata.product_name + '\t' + rawdata.price + '\t' + rawdata.stock_quantity);
+                            });
+                        }
+                    });
+                } catch (error) {
+                    console.log(error);
+                } finally {
+                    connection.end();
+                }
+
                 break;
             case "Add to inventory":
                 inquirer.prompt([
@@ -78,16 +90,24 @@ function start() {
                         type: "input",
                         message: "How many do you want to add?"
                     }
-                ]).then(function(answer) {
-                    console.log(answer);
-                    connection.query("UPDATE products SET stock_quantity = stock_quantity + ? WHERE product_name = ?",
-                                     [parseInt(answer.addQuantity), answer.productName], 
-                                     function(error, results, fields) {
-                                         if (error) throw error;
-                                         console.log(results);
-                                         console.log("The inventory is updated.");
-                                     });
-                    connection.end();
+                ]).then(function (answer) {
+                    try {
+                        if (isNaN(answer.addQuantity)) throw "Need a number for quantity!"
+                        connection.query("UPDATE products SET stock_quantity = stock_quantity + ? WHERE product_name = ?",
+                            [parseInt(answer.addQuantity), answer.productName],
+                            function (error, results, fields) {
+                                if (error) throw error;
+                                if (0 === results.changedRows) {
+                                    console.log("The product " + answer.productName + " is not in inventory")
+                                } else {
+                                    console.log("The inventory is updated.");
+                                }
+                            });
+                    } catch (e) {
+                        console.log(e);
+                    } finally {
+                        connection.end();
+                    }
                 })
                 break;
             case "Add new product":
@@ -112,15 +132,21 @@ function start() {
                         type: "input",
                         message: "What is the quantity added to inventory?"
                     }
-                ]).then(function(answer) {
-                    connection.query("INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES(?, ?, ?, ?)",
-                                     [answer.name, answer.dptmt, answer.price, answer.quantity],
-                                     function(error, results, fields) {
-                                         if (error) throw error;
-                                         console.log(results);
-                                         console.log("The new product is added to the inventory");
-                                     });
-                    connection.end();
+                ]).then(function (answer) {
+                    try {
+                        if (isNaN(answer.price)) throw "Price needs to be a number!";
+                        if (isNaN(answer.quantity)) throw "Quantity needs to be a number!";
+                        connection.query("INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES(?, ?, ?, ?)",
+                        [answer.name, answer.dptmt, answer.price, answer.quantity],
+                        function (error, results, fields) {
+                            if (error) throw error;
+                            console.log("The new product is added to the inventory");
+                        });
+                    } catch (error) {
+                        console.log(error);
+                    } finally {
+                        connection.end();
+                    }
                 })
                 break;
         }
