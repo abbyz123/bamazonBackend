@@ -22,7 +22,7 @@ connection.connect(async function (err) {
 });
 
 function start() {
-    // console.log("****------Welcome to the manager page-------**");
+    // start the inquiry of manager acitivity list
     inquirer.prompt([
         {
             name: "managerList",
@@ -37,6 +37,7 @@ function start() {
         }
     ]).then(function (answer) {
         switch (answer.managerList) {
+            // View all the products for sale
             case "View products for sale":
                 try {
                     connection.query("SELECT * from products", function (error, results, fields) {
@@ -52,10 +53,11 @@ function start() {
                 } catch (error) {
                     console.log(error);
                 } finally {
-                    connection.end();
+                    connection.end();   // end connection no matter what
                 }
 
                 break;
+            // View products that inventory is less than 5
             case "View low inventory":
                 try {
                     connection.query("SELECT * from products where stock_quantity < 5", function (error, results, fields) {
@@ -74,10 +76,11 @@ function start() {
                 } catch (error) {
                     console.log(error);
                 } finally {
-                    connection.end();
+                    connection.end();   // end connection no matter what
                 }
 
                 break;
+            // Add inventory to existing products
             case "Add to inventory":
                 inquirer.prompt([
                     {
@@ -106,10 +109,11 @@ function start() {
                     } catch (e) {
                         console.log(e);
                     } finally {
-                        connection.end();
+                        connection.end();       // end connection no matter what
                     }
                 })
                 break;
+            // Add a new product
             case "Add new product":
                 inquirer.prompt([
                     {
@@ -145,7 +149,7 @@ function start() {
                     } catch (error) {
                         console.log(error);
                     } finally {
-                        connection.end();
+                        connection.end();       // end connection no matter what
                     }
                 })
                 break;
