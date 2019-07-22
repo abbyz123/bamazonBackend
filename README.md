@@ -6,4 +6,4 @@ bamazonCustomer.js handles customer request to purchase items. A demo gif is sho
 ![bamazon customer](https://github.com/savannahz123/bamazonBackend/blob/master/customerDemoGif.gif)
 
 If the product inventory quantity is less than customer's request, the program will show insufficient inventory message:
-![bamazon customer insufficient inventory]()
+![bamazon customer insufficient inventory](https://github.com/savannahz123/bamazonBackend/blob/master/customerDemoInsufficientGif.gif)
