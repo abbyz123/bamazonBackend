@@ -21,3 +21,7 @@ bamazonManager.js handles manager operations on the product inventory.
 3. Add inventory
 
 ![manager option 3](https://github.com/savannahz123/bamazonBackend/blob/master/manager3.gif)
+
+4. Add new product
+
+![manager option 4](https://github.com/savannahz123/bamazonBackend/blob/master/manager4Gif.gif)
