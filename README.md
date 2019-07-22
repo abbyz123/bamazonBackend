@@ -11,4 +11,5 @@ If the product inventory quantity is less than customer's request, the program w
 ## bamazonManager.js
 bamazonManager.js handles manager operations on the product inventory.
 1. Show all inventory
+
 ![manager option 1](https://github.com/savannahz123/bamazonBackend/blob/master/manager1Gif.gif)
